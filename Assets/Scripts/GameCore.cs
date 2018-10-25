@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using System;
 
-internal class GameCore : MonoBehaviour
+
+
+internal partial class GameCore : MonoBehaviour
 {
 
 
@@ -31,7 +32,8 @@ internal class GameCore : MonoBehaviour
 
 	private Transform _mainCam;
 	private Transform _currentLayer;
-	private Transform _poleRoot;
+	private List<Transform> _pole;
+	private TransformPool _layersPool;
 	private Vector3 _scaleVector;
 	private Vector3 _mainCamStartPosition;
 	private Vector3 _splashFxStartPosition;
@@ -48,6 +50,12 @@ internal class GameCore : MonoBehaviour
 
 	private void Start ()
 	{
+		_layersPool = new TransformPool((out Transform trans) => 
+			{
+				trans = Instantiate(_firstLayer).transform;
+				ResetLayer(trans);
+			} );
+
 		_mainCam = Camera.main.transform;
 		_mainCamStartPosition = _mainCam.position;
 		_splashFxStartPosition = _splashFx.transform.position;
@@ -61,6 +69,8 @@ internal class GameCore : MonoBehaviour
 		_layersScoreProfile.value = 0;
 
 		_firstLayer.GetComponent<Cylinder>().ChangeEmissionColor(Color.black, 0.0f);
+		
+		_pole = new List<Transform>();
 	}
 	
 
@@ -69,11 +79,12 @@ internal class GameCore : MonoBehaviour
 		_mainCam.DOMove(_mainCamStartPosition, 0.3f);
 		_splashFx.transform.position = _splashFxStartPosition;
 
-		if (_poleRoot != null)
+		foreach (Transform trans in _pole)
 		{
-			Destroy(_poleRoot.gameObject);
+			ResetLayer(trans);
+			_layersPool.Reset(trans);
 		}
-		_poleRoot = new GameObject("Pole").transform;
+		_pole.Clear();
 
 		_currentLayer = _firstLayer.transform;
 		_prevLayerScale = _currentLayer.localScale.x;
@@ -81,6 +92,13 @@ internal class GameCore : MonoBehaviour
 
 		_firstLayer.GetComponent<Cylinder>().ChangeEmissionColor(_firstColor, 0.0f);
 		_splashAudioFx.Play();
+	}
+
+
+	private void ResetLayer(Transform trans)
+	{
+		trans.GetComponent<Cylinder>().ChangeEmissionColor(Color.black, 0.0f);
+		trans.localScale = Vector3.up;
 	}
 
 
@@ -118,9 +136,10 @@ internal class GameCore : MonoBehaviour
 
 	private void TouchDown()
 	{
-		_currentLayer = Instantiate(_firstLayer, _currentLayer.position + _layerOffset, Quaternion.identity, _poleRoot).transform;
-		_currentLayer.GetComponent<Cylinder>().ChangeEmissionColor(Color.black, 0.0f);
-		_currentLayer.localScale = Vector3.up;
+		_currentLayer = _layersPool.next;
+		_currentLayer.position = _layerOffset * _layersScoreProfile.value;
+
+		_pole.Add(_currentLayer);
 
 		StartCoroutine(ScaleUpLayer());
 	}
@@ -177,7 +196,9 @@ internal class GameCore : MonoBehaviour
 
 	private void ShopwPole()
 	{
-		Destroy(_currentLayer.gameObject);
+		ResetLayer(_currentLayer);
+		_layersPool.Reset(_currentLayer);
+		_pole.Remove(_currentLayer);
 
 		Vector3 newPos = (_currentLayer.position - _firstLayer.transform.position);
 		newPos.z -= newPos.magnitude / Mathf.Tan(Mathf.Deg2Rad * (Camera.main.fieldOfView * 0.5f + _mainCam.rotation.eulerAngles.x));
