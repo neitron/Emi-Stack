@@ -17,7 +17,7 @@ internal class GameState
 		{
 			_state = value;
 			Input.ResetInputAxes();
-			//Debug.Log(state);
+			Debug.Log(state);
 		}
 	}
 

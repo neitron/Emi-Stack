@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af262917ef3f8324692fc79610592312, type: 3}
+  m_Name: Game Settings 0
+  m_EditorClassIdentifier: 
+  scaleSpeed: 0.5
+  cylinderStartScale: {x: 0.025, y: 1, z: 0.025}
+  scaleThreshold: 1.1
+  cameraRotationSpeed: 45
+  outOffScreenOffset: {x: 0, y: 2, z: 0}
+  moveToEndPosSpeed: 5
+  biasToJoinCurentCylinder: 0.01
+  perfectFitDifference: 0.04
+  perfectSpeedModificator: 1.5
+  perfectScaleUpModificator: 0.02
+  perfectScalingAnimDuration: 0.3
+  perfectScalingAnimEase: 28

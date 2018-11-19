@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 
 
@@ -7,7 +8,27 @@ internal class IntProfile : ScriptableObject
 {
 
 
-	public int value;
+	[SerializeField] private int _value;
+
+	public int value
+	{
+		get
+		{
+			return _value;
+		}
+		set
+		{
+			if (value == _value)
+			{
+				return;
+			}
+
+			_value = value;
+			OnChanged?.Invoke(_value);
+		}
+	}
+
+	public event Action<int> OnChanged;
 
 
 }

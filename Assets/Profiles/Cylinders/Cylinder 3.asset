@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8bb299b6c5183541bae82210f8d9e49, type: 3}
+  m_Name: Cylinder 3
+  m_EditorClassIdentifier: 
+  cost: 1000
+  isBought: 0
+  thumbnail: {fileID: 21300000, guid: 0a7079a38bdb9414a9aea560b25b81fc, type: 3}

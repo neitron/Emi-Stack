@@ -2,24 +2,35 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System;
 
-
-
-internal partial class GameCore : MonoBehaviour
+public class GameCore : MonoBehaviour
 {
 
 
-	[SerializeField] private GameObject _firstLayer;
-	[SerializeField] private Vector3 _layerOffset;
-	[SerializeField] private float _scaleThreshold;
-	[SerializeField] private float _scaleSpeed;
+	[SerializeField] private Transform _mainCam;
+
+	[Header("Profiles")]
+	[SerializeField] private SettingsProfile _gameSettings;
 	[SerializeField] private IntProfile _layersScoreProfile;
 	[SerializeField] private IntProfile _bestScore;
+	[SerializeField] private IntProfile _coins;
+	[SerializeField] private GameEventProfiler _putting;
+	[SerializeField] private GameEventProfiler _perfectMatch;
+	[SerializeField] private GameEventProfiler _endGame;
+
+	[Header("Prototype")]
+	[SerializeField] private GameObject _firstLayer;
+	
+	[Header("Color Schema")]
 	[SerializeField, ColorUsage(false, true)] private Color _firstColor;
 	[SerializeField, ColorUsage(false, true)] private Color _errorColor;
 	[SerializeField, ColorUsage(false, true)] private Color _successColor;
-	[SerializeField] private ParticleSystem _splashFx;
-	[SerializeField] private AudioSource _splashAudioFx;
+	[SerializeField, ColorUsage(false, true)] private Color _perfectColor;
+
+	[Header("FX")]
+	[SerializeField] private Transform _visualFx;
+
 
 
 	private enum TouchState { Released, Up, Down }
@@ -30,14 +41,19 @@ internal partial class GameCore : MonoBehaviour
 	private GameState _gameState;
 	private GamePrefs _gamePrefs;
 
-	private Transform _mainCam;
 	private Transform _currentLayer;
-	private List<Transform> _pole;
+	private List<Transform> _stack;
 	private TransformPool _layersPool;
 	private Vector3 _scaleVector;
 	private Vector3 _mainCamStartPosition;
+	private Quaternion _mainCamStartRotation;
 	private Vector3 _splashFxStartPosition;
+	private Vector3 _layerOffset;
+	private Vector3 _endLayerPosition;
+	private Vector3 _perfectMatchScaleUpFactor;
 	private float _prevLayerScale;
+	private bool _isPrevPerfect;
+	private Animation _graundingAnimation;
 
 
 
@@ -45,60 +61,93 @@ internal partial class GameCore : MonoBehaviour
 	{
 		_gameState = new GameState();
 		_gamePrefs = new GamePrefs();
+		
+		LoadUiScene();
+	}
+
+	
+	[System.Obsolete("Temp solution")] private void LoadUiScene()
+	{
+#if !UNITY_EDITOR
+		UnityEngine.SceneManagement.SceneManager.LoadScene(1, UnityEngine.SceneManagement.LoadSceneMode.Additive);
+#endif
 	}
 
 
 	private void Start ()
 	{
-		_layersPool = new TransformPool((out Transform trans) => 
-			{
-				trans = Instantiate(_firstLayer).transform;
-				ResetLayer(trans);
-			} );
-
-		_mainCam = Camera.main.transform;
-		_mainCamStartPosition = _mainCam.position;
-		_splashFxStartPosition = _splashFx.transform.position;
-		_scaleVector = new Vector3(1.0f, 0.0f, 1.0f) * _scaleSpeed;
-
 		_gameStateCallbacks = new Dictionary<GameState.State, UpdateCallback>();
 		_gameStateCallbacks.Add(GameState.State.Home, HomeUpdate);
 		_gameStateCallbacks.Add(GameState.State.Session, SessionUpdate);
 
-		_bestScore.value = _gamePrefs.bestScore;
+		LoadPrefs();
+
+		_mainCamStartPosition = _mainCam.position;
+		_mainCamStartRotation = _mainCam.rotation;
+
+		_stack = new List<Transform>();
+
+		_layerOffset = new Vector3(0, _gameSettings.cylinderStartScale.y * 0.5f, 0.0f);
+		_scaleVector = new Vector3(_gameSettings.scaleSpeed, 0.0f, _gameSettings.scaleSpeed);
+		_perfectMatchScaleUpFactor = new Vector3(_gameSettings.perfectScaleUpModificator, 0.0f, _gameSettings.perfectScaleUpModificator);
+
+		_firstLayer.transform.localScale = new Vector3(1.0f, _gameSettings.cylinderStartScale.y, 1.0f);
+		InitPool();
+
 		_layersScoreProfile.value = 0;
 
-		_firstLayer.GetComponent<Cylinder>().ChangeEmissionColor(Color.black, 0.0f);
-		
-		_pole = new List<Transform>();
+		_splashFxStartPosition = _visualFx.transform.position;
+
+		// Debug console test log
+		Debug.Log("Test Log");
+		Debug.LogWarning("Test Warning");
+		Debug.LogError("Tets Error");
 	}
-	
+
+
+	private void LoadPrefs()
+	{
+		_bestScore.value = _gamePrefs.bestScore;
+		_coins.value = _gamePrefs.coins;
+	}
+
+
+	private void InitPool()
+	{
+		_firstLayer.GetComponent<Cylinder>().ChangeEmissionColor(Color.black, 0.0f);
+		_layersPool = new TransformPool((out Transform trans) =>
+		{
+			trans = Instantiate(_firstLayer).transform;
+			ResetLayer(trans);
+		});
+	}
+
 
 	private void Reset()
 	{
 		_mainCam.DOMove(_mainCamStartPosition, 0.3f);
-		_splashFx.transform.position = _splashFxStartPosition;
+		_visualFx.transform.position = _splashFxStartPosition;
 
-		foreach (Transform trans in _pole)
+		foreach (Transform trans in _stack)
 		{
 			ResetLayer(trans);
 			_layersPool.Reset(trans);
 		}
-		_pole.Clear();
+		_stack.Clear();
 
 		_currentLayer = _firstLayer.transform;
 		_prevLayerScale = _currentLayer.localScale.x;
 		_layersScoreProfile.value = 1;
 
 		_firstLayer.GetComponent<Cylinder>().ChangeEmissionColor(_firstColor, 0.0f);
-		_splashAudioFx.Play();
+		_putting.Raice();
 	}
 
 
 	private void ResetLayer(Transform trans)
 	{
 		trans.GetComponent<Cylinder>().ChangeEmissionColor(Color.black, 0.0f);
-		trans.localScale = Vector3.up;
+		trans.localScale = _gameSettings.cylinderStartScale;
 	}
 
 
@@ -109,48 +158,72 @@ internal partial class GameCore : MonoBehaviour
 			_gameStateCallbacks[_gameState.state]?.Invoke();
 		}
 	}
-
+	
 
 	private void HomeUpdate()
 	{
-		if (Input.GetMouseButtonUp(0))
-		{
-			Reset();
-			_gameState.state = GameState.State.Session;
-		}
+		// Home behaviour
+	}
+
+
+	public void StartGame()
+	{
+		Reset();
+		_gameState.state = GameState.State.Session;
 	}
 
 
 	private void SessionUpdate()
 	{
-		if (Input.GetMouseButtonDown(0))
-		{
-			ChangeTouchState(TouchState.Down);
-		}
-		else if (Input.GetMouseButtonUp(0))
-		{
-			ChangeTouchState(TouchState.Up);
-		}
+		// Session's behaviour
+		_mainCam.Rotate(Vector3.up, _gameSettings.cameraRotationSpeed * Time.deltaTime);
 	}
 
 
 	private void TouchDown()
 	{
 		_currentLayer = _layersPool.next;
-		_currentLayer.position = _layerOffset * _layersScoreProfile.value;
+		_endLayerPosition = _layerOffset * _layersScoreProfile.value;
+		_currentLayer.position = _endLayerPosition + _gameSettings.outOffScreenOffset;
 
-		_pole.Add(_currentLayer);
+		_stack.Add(_currentLayer);
 
-		StartCoroutine(ScaleUpLayer());
+		float perfectFactor = 1.0f;
+		if (_isPrevPerfect)
+		{
+			perfectFactor = _gameSettings.perfectSpeedModificator;
+			_isPrevPerfect = false;
+		}
+
+		StartCoroutine(ScaleUpLayer(perfectFactor));
 	}
 
 
-	private IEnumerator ScaleUpLayer()
+	private IEnumerator ScaleUpLayer(float scaleFactor)
 	{
 		var wait = new WaitForEndOfFrame();
-		while (_currentLayer.localScale.x / _prevLayerScale < _scaleThreshold)
+
+		// Falling
+		Vector3 fallDownStep = (_endLayerPosition - _currentLayer.position) * _gameSettings.moveToEndPosSpeed;
+		while (Vector3.SqrMagnitude(_endLayerPosition - _currentLayer.position) > _gameSettings.biasToJoinCurentCylinder)
 		{
-			_currentLayer.localScale += _scaleVector * Time.deltaTime;
+			_currentLayer.position += fallDownStep * Time.deltaTime;
+			yield return wait;
+		}
+		_currentLayer.position = _endLayerPosition;
+
+		// Grounding Animation
+		Animation graundingAnimation = _currentLayer.GetComponent<Animation>();
+		graundingAnimation.Play();
+		do
+		{
+			yield return wait;
+		} while (graundingAnimation.isPlaying);
+
+		// Grow Up
+		while (_currentLayer.localScale.x / _prevLayerScale < _gameSettings.scaleThreshold)
+		{
+			_currentLayer.localScale += _scaleVector * scaleFactor * Time.deltaTime;
 			yield return wait;
 		}
 		EndGame();
@@ -161,29 +234,75 @@ internal partial class GameCore : MonoBehaviour
 	private void TouchUp()
 	{
 		StopAllCoroutines();
-
-		if (_currentLayer.localScale.x > _prevLayerScale)
+		
+		if (_currentLayer.position != _endLayerPosition || _currentLayer.localScale.x > _prevLayerScale)
 		{
 			EndGame();
 			return;
 		}
 
+		if (_prevLayerScale - _currentLayer.localScale.x < _gameSettings.perfectFitDifference)
+		{
+			_currentLayer.localScale = new Vector3(_prevLayerScale, _gameSettings.cylinderStartScale.y, _prevLayerScale);
+			PerfectMatch();
+		}
+		else
+		{
+			_prevLayerScale = _currentLayer.localScale.x;
+		}
+
 		_currentLayer.GetComponent<Cylinder>().ChangeEmissionColor(_successColor, 0.2f);
-		_splashFx.transform.position += _layerOffset;
-		_splashFx.Play();
 
-		_splashAudioFx.Play();
+		_putting.Raice();
+		_visualFx.transform.position += _layerOffset;
 
-		_prevLayerScale = _currentLayer.localScale.x;
 		_mainCam.DOMove(_mainCam.position + _layerOffset, 0.1f);
 		_layersScoreProfile.value++;
 	}
-	
+
+
+	private void PerfectMatch()
+	{
+		_coins.value++;
+		_gamePrefs.coins = _coins.value;
+
+		_currentLayer.GetComponent<Cylinder>().ChangeEmissionColor(_perfectColor, 0.5f);
+
+		_isPrevPerfect = true;
+
+		_perfectMatch.Raice();
+
+		int lastInd = _stack.Count - 1;
+		for (int i = lastInd; i >=0; i--)
+		{
+			Vector3 endScale = _stack[i].localScale + _perfectMatchScaleUpFactor;
+
+			if(endScale.x > _firstLayer.transform.localScale.x)
+			{
+				endScale = _firstLayer.transform.localScale;
+				
+			} 
+			else if (endScale.x == _firstLayer.transform.localScale.x)
+			{
+				break;
+			}
+			
+			_stack[i].DOScale(endScale, _gameSettings.perfectScalingAnimDuration)
+				.SetEase(_gameSettings.perfectScalingAnimEase).SetDelay((lastInd - i) * 0.02f);
+
+			if (i == lastInd)
+			{
+				_prevLayerScale = endScale.x;
+			}
+		}
+
+	}
+
 
 	private void EndGame()
 	{
 		_gameState.state = GameState.State.End;
-
+		
 		_currentLayer.GetComponent<Cylinder>().ChangeEmissionColor(_errorColor, 0.5f, ShopwPole);
 
 		if (_layersScoreProfile.value > _bestScore.value)
@@ -196,24 +315,32 @@ internal partial class GameCore : MonoBehaviour
 
 	private void ShopwPole()
 	{
+		_gameState.state = GameState.State.Home;
+
+		_mainCam.DORotateQuaternion(_mainCamStartRotation, 0.3f);
+
 		ResetLayer(_currentLayer);
 		_layersPool.Reset(_currentLayer);
-		_pole.Remove(_currentLayer);
+		_stack.Remove(_currentLayer);
+
+		if(_stack.Count < 3)
+		{
+			_endGame.Raice();
+			return;
+		}
 
 		Vector3 newPos = (_currentLayer.position - _firstLayer.transform.position);
-		newPos.z -= newPos.magnitude / Mathf.Tan(Mathf.Deg2Rad * (Camera.main.fieldOfView * 0.5f + _mainCam.rotation.eulerAngles.x));
-		newPos.y -= 0.5f;
+		newPos.z -= newPos.magnitude / Mathf.Tan(Mathf.Deg2Rad * (Camera.main.fieldOfView * 0.5f + Camera.main.transform.localRotation.eulerAngles.x));
+		newPos.y += 0.5f;
 
-		_mainCam.DOMove(_firstLayer.transform.position + newPos, 0.3f);
-
-		_gameState.state = GameState.State.Home;
+		_mainCam.DOMove(_firstLayer.transform.position + newPos, 0.3f).OnComplete(_endGame.Raice);
 	}
 
 
 	private void ChangeTouchState(TouchState state)
 	{
+		// Debug.Log(state);
 		_touchState = state;
-		//Debug.Log(state);
 
 		switch (_touchState)
 		{
@@ -224,6 +351,20 @@ internal partial class GameCore : MonoBehaviour
 				TouchUp();
 				break;
 		}
+	}
+
+
+	public void OnPointerDown()
+	{
+		if(_gameState.state == GameState.State.Session)
+			ChangeTouchState(TouchState.Down);
+	}
+
+
+	public void OnPointerUp()
+	{
+		if (_gameState.state == GameState.State.Session)
+			ChangeTouchState(TouchState.Up);
 	}
 
 

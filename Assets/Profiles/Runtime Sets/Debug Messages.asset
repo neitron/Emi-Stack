@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e03d51a9ec8b3e14aa9497d5315d95c8, type: 3}
+  m_Name: Debug Messages
+  m_EditorClassIdentifier: 
+  items:
+  - '<color=#FAB141FF><b>Your current multi-scene setup has inconsistent Lighting
+    settings which may lead to different lighting when loading scenes individually
+    or in a different order! Consider homogenizing the following:
+
+    1/2 scenes have Auto baking enabled.
+
+    1/2 scenes have different Realtime GI settings.
+
+    </b>
+
+    </color>'
+  - '<color=#828282FF><b>Test Log</b>
+
+    UnityEngine.Debug:Log(Object)
+
+    GameCore:Start() (at Assets/Scripts/GameCore.cs:103)
+
+    </color>'
+  - '<color=#FAB141FF><b>Test Warning</b>
+
+    UnityEngine.Debug:LogWarning(Object)
+
+    GameCore:Start() (at Assets/Scripts/GameCore.cs:104)
+
+    </color>'
+  - '<color=#FF5353FF><b>Tets Error</b>
+
+    UnityEngine.Debug:LogError(Object)
+
+    GameCore:Start() (at Assets/Scripts/GameCore.cs:105)
+
+    </color>'
