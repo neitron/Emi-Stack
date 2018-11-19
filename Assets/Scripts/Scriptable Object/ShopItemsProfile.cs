@@ -5,7 +5,7 @@ using UnityEngine;
 
 
 [CreateAssetMenu()]
-public class ShopItemsProfile : RuntimeSetProfile<IShopItem<CylinderProfile>>
+public class ShopItemsProfile : RuntimeSetProfile<IShopItem>
 {
 
 

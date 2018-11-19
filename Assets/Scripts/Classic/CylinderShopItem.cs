@@ -1,4 +1,6 @@
-﻿public class CylinderShopItem : IShopItem<CylinderProfile>
+﻿using UnityEngine;
+
+public class CylinderShopItem : IShopItemWithThumb
 {
 
 
@@ -8,7 +10,22 @@
 
 	public int id => _id;
 	public CylinderProfile profile => _profile;
-	public bool isBought => _profile.isBought;
+	public int cost => _profile.cost;
+	public Sprite thumbnail => _profile.thumbnail;
+
+	public bool isBought
+	{
+		get
+		{
+			return _profile.isBought;
+		}
+
+		set
+		{
+			_profile.isBought = value;
+		}
+	}
+
 
 
 

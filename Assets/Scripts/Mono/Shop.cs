@@ -82,12 +82,11 @@ public class Shop : MonoBehaviour
 		int id = 0;
 		foreach (CylinderProfile goodProfile in _goodsProfiles)
 		{
-			IShopItem<CylinderProfile> shopItem = new CylinderShopItem(goodProfile, id);
-			shopItem.profile.isBought = _shopSaveData.shopBoughtItems[id].isBought;
+			IShopItem shopItem = new CylinderShopItem(goodProfile, id);
+			shopItem.isBought = _shopSaveData.shopBoughtItems[id].isBought;
 			_goods.Add(shopItem);
 			id++;
 		}
-
 
 		_goods.onChanged?.Invoke();
 	}
@@ -95,13 +94,13 @@ public class Shop : MonoBehaviour
 
 	public void PurchaseOrEquip(int id)
 	{
-		if(_goods[id].profile.isBought)
+		if(_goods[id].isBought)
 		{
 			_goods[id].Equip();
 			return;
 		}
 
-		if (_goods[id].profile.cost <= _coins.value)
+		if (_goods[id].cost <= _coins.value)
 		{
 			Purchase(id);
 		}
@@ -110,7 +109,7 @@ public class Shop : MonoBehaviour
 
 	private void Purchase(int id)
 	{
-		_coins.value -= _goods[id].profile.cost;
+		_coins.value -= _goods[id].cost;
 		_gamePrefs.coins = _coins.value;
 
 		_goods.onBought?.Invoke(id);

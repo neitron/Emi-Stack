@@ -26,21 +26,21 @@ public class ShopItemUi : MonoBehaviour
 	}
 
 
-	public void Init(ShopScreenUi shopUi, IShopItem<CylinderProfile> item)
+	public void Init(ShopScreenUi shopUi, IShopItemWithThumb item)
 	{
 		_shopUi = shopUi;
 
 		_id = item.id;
 
-		_thumbnail.sprite = item.profile.thumbnail;
+		_thumbnail.sprite = item.thumbnail;
 
-		if (item.profile.isBought)
+		if (item.isBought)
 		{
 			OpenToSelect();
 			return;
 		}
 
-		_costView.text = $"$ {item.profile.cost}";
+		_costView.text = $"$ {item.cost}";
 	}
 
 

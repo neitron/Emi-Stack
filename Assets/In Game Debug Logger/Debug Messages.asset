@@ -27,20 +27,20 @@ MonoBehaviour:
 
     UnityEngine.Debug:Log(Object)
 
-    GameCore:Start() (at Assets/Scripts/GameCore.cs:103)
+    GameCore:Start() (at Assets/Scripts/Mono/GameCore.cs:102)
 
     </color>'
   - '<color=#FAB141FF><b>Test Warning</b>
 
     UnityEngine.Debug:LogWarning(Object)
 
-    GameCore:Start() (at Assets/Scripts/GameCore.cs:104)
+    GameCore:Start() (at Assets/Scripts/Mono/GameCore.cs:103)
 
     </color>'
   - '<color=#FF5353FF><b>Tets Error</b>
 
     UnityEngine.Debug:LogError(Object)
 
-    GameCore:Start() (at Assets/Scripts/GameCore.cs:105)
+    GameCore:Start() (at Assets/Scripts/Mono/GameCore.cs:104)
 
     </color>'

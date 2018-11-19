@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
 
 
@@ -37,10 +36,10 @@ public class DebugScreenUi : MonoBehaviour
 	{
 		for(int i = _previousCount; i < messages.Count; i++)
 		{
-			TMPro.TextMeshProUGUI message = Instantiate(_messagePrefab, _listRoot).GetComponent<TMPro.TextMeshProUGUI>();
+			Text message = Instantiate(_messagePrefab, _listRoot).GetComponent<Text>();
 			message.text = messages[i];
 
-			UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(_listRoot);
+			LayoutRebuilder.ForceRebuildLayoutImmediate(_listRoot);
 		}
 	}
 
