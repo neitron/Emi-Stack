@@ -22,21 +22,19 @@ public class ShopItemUi : MonoBehaviour
 
 	private void Awake()
 	{
-		GetComponent<Button>().onClick.AddListener(OnShopItemClick);
+		GetComponent<Button>().onClick.AddListener(OnClick);
 	}
 
 
-	public void Init(ShopScreenUi shopUi, IShopItemWithThumb item)
+	public void Init(ShopScreenUi shopUi, IShopItemView item)
 	{
 		_shopUi = shopUi;
-
 		_id = item.id;
-
 		_thumbnail.sprite = item.thumbnail;
 
 		if (item.isBought)
 		{
-			OpenToSelect();
+			CahngeToBoughtView();
 			return;
 		}
 
@@ -44,14 +42,14 @@ public class ShopItemUi : MonoBehaviour
 	}
 
 
-	internal void OpenToSelect()
+	internal void CahngeToBoughtView()
 	{
 		_viewBought.SetActive(true);
 		_viewNonBought.SetActive(false);
 	}
 
 
-	private void OnShopItemClick()
+	private void OnClick()
 	{
 		_shopUi.OnClickItem(_id);
 	}

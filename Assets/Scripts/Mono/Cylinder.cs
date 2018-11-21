@@ -4,7 +4,7 @@ using System;
 
 
 
-public class Cylinder : MonoBehaviour
+public class Cylinder : MonoBehaviour, IEquipable<CylinderProfile>
 {
 	
 
@@ -12,14 +12,22 @@ public class Cylinder : MonoBehaviour
 	private MaterialPropertyBlock _materialPropertyBlock;
 	private MeshRenderer _renderer;
 	private int _emiColorKey;
-	
+	private int _tintColorKey;
+	private int _mainTextureKey;
+	private int _bumpTextureKey;
+	private int _emiTextureKey;
 
 
 	private void Awake()
 	{
 		_materialPropertyBlock = new MaterialPropertyBlock();
 		_renderer = GetComponentInChildren<MeshRenderer>();
+
 		_emiColorKey = Shader.PropertyToID("_EmissionColor");
+		_tintColorKey = Shader.PropertyToID("_Color");
+		_mainTextureKey = Shader.PropertyToID("_MainTex");
+		_bumpTextureKey = Shader.PropertyToID("_BumpMap");
+		_emiTextureKey = Shader.PropertyToID("_EmissionMap");
 	}
 
 
@@ -38,18 +46,15 @@ public class Cylinder : MonoBehaviour
 			}, to, duration)
 			.OnComplete(callback);
 	}
-
-
-	public void Purchase()
+	
+	
+	public void Equip(CylinderProfile toEquip)
 	{
-		throw new NotImplementedException();
+		_renderer.sharedMaterial.SetColor(_tintColorKey, toEquip.tintColor);
+		_renderer.sharedMaterial.SetTexture(_mainTextureKey, toEquip.mainMap);
+		_renderer.sharedMaterial.SetTexture(_bumpTextureKey, toEquip.normalMap);
+		_renderer.sharedMaterial.SetTexture(_emiTextureKey, toEquip.emissionMap);
 	}
-
-
-	public void Equip()
-	{
-		throw new NotImplementedException();
-	}
-
+	
 
 }

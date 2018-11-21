@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+
 public class Shop : MonoBehaviour
 {
 
 
+	[SerializeField] private GameEventProfiler _closeShop;
 	[SerializeField] private ShopItemsProfile _goods;
-	[SerializeField] private List<CylinderProfile> _goodsProfiles;
+	[SerializeField] private ShopReadyProfileSet _goodsProfiles;
 	[SerializeField] private IntProfile _coins;
 
-
+	
 	private GamePrefs _gamePrefs;
 	private ShopSaveData _shopSaveData;
 
@@ -20,16 +22,18 @@ public class Shop : MonoBehaviour
 	private void Awake()
 	{
 		_gamePrefs = new GamePrefs();
-		_goods.tryToSelect += PurchaseOrEquip;
+		_goods.tryToSelect += TryToSelect;
 	}
 
 
 	private void Start()
 	{
-		_goodsProfiles.Sort((cpl, cpr) => { return cpl.cost.CompareTo(cpr.cost); });
+		_goodsProfiles.items.Sort((cpl, cpr) => { return cpl.cost.CompareTo(cpr.cost); });
 
 		LoadShopData();
 		GenerateGoods();
+
+		TryToSelect(_gamePrefs.selectedCylinderId);
 	}
 
 
@@ -79,24 +83,34 @@ public class Shop : MonoBehaviour
 
 	private void GenerateGoods()
 	{
-		int id = 0;
-		foreach (CylinderProfile goodProfile in _goodsProfiles)
+		GenerateGoods(_goodsProfiles.items, (id, profile) => { return new ShopItem(profile, id); });
+		_goods.onChanged?.Invoke();
+	}
+	
+
+	private void GenerateGoods<T>(List<T> itemProfiles, Func<int, T, IShopItem> caster)
+	{
+		if (caster == null)
 		{
-			IShopItem shopItem = new CylinderShopItem(goodProfile, id);
-			shopItem.isBought = _shopSaveData.shopBoughtItems[id].isBought;
-			_goods.Add(shopItem);
-			id++;
+			Debug.LogError("Caster is null");
+			return;
 		}
 
-		_goods.onChanged?.Invoke();
+		foreach (T goodProfile in itemProfiles)
+		{
+			int id = _goods.Count;
+			IShopItem shopItem = caster(id, goodProfile);
+			shopItem.isBought = _shopSaveData.shopBoughtItems[id].isBought;
+			_goods.Add(shopItem);
+		}
 	}
 
 
-	public void PurchaseOrEquip(int id)
+	public void TryToSelect(int id)
 	{
 		if(_goods[id].isBought)
 		{
-			_goods[id].Equip();
+			Select(id);
 			return;
 		}
 
@@ -104,6 +118,15 @@ public class Shop : MonoBehaviour
 		{
 			Purchase(id);
 		}
+	}
+
+
+	private void Select(int id)
+	{
+		_goods[id].Select();
+		_gamePrefs.selectedCylinderId = id;
+
+		_closeShop.Raice();
 	}
 
 
@@ -116,6 +139,23 @@ public class Shop : MonoBehaviour
 		_goods[id].Purchase();
 		_shopSaveData.shopBoughtItems[id].isBought = true;
 		SaveShopData();
+	}
+
+
+	[ContextMenu("Reset Shop")]
+	private void ResetShop()
+	{
+		_shopSaveData = new ShopSaveData();
+		SetDefaultData();
+		SaveShopData();
+	}
+
+
+	[ContextMenu("Add 10 Cons")]
+	private void AddCoins()
+	{
+		_coins.value += 10;
+		_gamePrefs.coins = _coins.value;
 	}
 
 

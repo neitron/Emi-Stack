@@ -11,7 +11,7 @@ public class GameSaver
 	public void Save<T>(T data) where T : SaveData, new()
 	{
 		BinaryFormatter bf = new BinaryFormatter();
-		string fullPath = Application.persistentDataPath + $"/{data.KEY_NAME}.save";
+		string fullPath = Application.persistentDataPath + $"/{data.keyName}.save";
 		using (FileStream fstream = File.Create(fullPath))
 		{
 			bf.Serialize(fstream, data);
@@ -34,7 +34,7 @@ public class GameSaver
 
 		if (string.IsNullOrEmpty(keyName))
 		{
-			keyName = data.KEY_NAME;
+			keyName = data.keyName;
 		}
 
 		string fullPath = Application.persistentDataPath + $"/{keyName}.save";

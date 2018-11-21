@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -9,7 +8,7 @@ public class ShopItemsProfile : RuntimeSetProfile<IShopItem>
 {
 
 
-	// ui poutbox
+	// ui outbox
 	public Action<int> tryToSelect;
 	
 	// ui inbox

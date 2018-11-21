@@ -67,7 +67,7 @@ public class DebugLog : MonoBehaviour
 				break;
 		}
 
-		string message = $"<color=#{colorHex}><b>{condition}</b>{stackTrace}</color>";
+		string message = $"<color=#{colorHex}><b>{condition}</b>\n{stackTrace}</color>";
 		_log.Add(message);
 	}
 

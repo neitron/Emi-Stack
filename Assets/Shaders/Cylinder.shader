@@ -28,8 +28,8 @@ Shader "CS/LightweightPipeline/Standard (Simple Lighting, PerRenderer Emission)"
         _Parallax("Height Scale", Range(0.005, 0.08)) = 0.02
         _ParallaxMap("Height Map", 2D) = "black" {}
 
+		_EmissionMap("Emission", 2D) = "white" {}
         [PerRendererData]_EmissionColor("Emission Color", Color) = (0,0,0)
-        _EmissionMap("Emission", 2D) = "white" {}
 
         _DetailMask("Detail Mask", 2D) = "white" {}
 

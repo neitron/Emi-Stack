@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 
 
-public abstract class RuntimeSetProfile<T> : ScriptableObject
+public abstract class RuntimeSetProfile<T> : ScriptableObject, IEnumerable
 {
 
 
@@ -36,6 +37,12 @@ public abstract class RuntimeSetProfile<T> : ScriptableObject
 	public void Clear()
 	{
 		items.Clear();
+	}
+
+
+	public IEnumerator GetEnumerator()
+	{
+		return items.GetEnumerator();
 	}
 
 

@@ -38,7 +38,7 @@ public class ShopScreenUi : MonoBehaviour
 
 	private void UpdateButtonAfterBought(int id)
 	{
-		_goodsViewButtons[id].OpenToSelect();
+		_goodsViewButtons[id].CahngeToBoughtView();
 	}
 
 
@@ -48,7 +48,7 @@ public class ShopScreenUi : MonoBehaviour
 
 		_templatePrefab.SetActive(true);
 		
-		foreach (IShopItemWithThumb item in _goods.items)
+		foreach (IShopItemView item in _goods.items)
 		{
 			ShopItemUi temp = Instantiate(_templatePrefab, _view.transform).GetComponent<ShopItemUi>();
 			temp.Init(this, item);

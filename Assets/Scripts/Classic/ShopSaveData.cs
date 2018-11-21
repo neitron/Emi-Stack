@@ -37,4 +37,14 @@ public class ShopSaveData : SaveData
 	}
 
 
+	public void Reset()
+	{
+		foreach (ShopItemSaveData item in shopBoughtItems)
+		{
+			item.isBought = false;
+		}
+		shopBoughtItems[0].isBought = true;
+	}
+
+
 }

@@ -7,16 +7,16 @@ public abstract class SaveData
 { 
 
 
-	public readonly string KEY_NAME;
+	public readonly string keyName;
 	
 
 
 	public SaveData(string keyName = null)
 	{
-		KEY_NAME = keyName;
-		if (string.IsNullOrEmpty(KEY_NAME))
+		this.keyName = keyName;
+		if (string.IsNullOrEmpty(this.keyName))
 		{
-			KEY_NAME = $"{GetType().Name}";
+			this.keyName = $"{GetType().Name}";
 		}
 	}
 	

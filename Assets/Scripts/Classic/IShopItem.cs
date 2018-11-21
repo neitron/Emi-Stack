@@ -1,32 +1,9 @@
-﻿using UnityEngine;
-
-
-
-public interface IShopItem
+﻿public interface IShopItem : IShopItemData
 {
 
-
-	int cost { get; }
-	bool isBought { get; set; }
-	int id { get; }
 
 	void Purchase();
-	void Equip();
+	void Select();
 
 
 }
-
-
-
-public interface IHasThumbnail
-{
-
-
-	Sprite thumbnail { get; }
-
-
-}
-
-
-public interface IShopItemWithThumb : IShopItem, IHasThumbnail
-{}
