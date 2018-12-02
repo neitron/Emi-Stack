@@ -9,7 +9,7 @@ public class ShopScreenUi : MonoBehaviour
 {
 
 	[Header("Shop things")]
-	[SerializeField] private ShopItemsProfile _goods;
+	[SerializeField] private ShopItemSetProfile _goods;
 	[SerializeField] private LayoutGroup _view;
 	[SerializeField] private GameObject _templatePrefab;
 

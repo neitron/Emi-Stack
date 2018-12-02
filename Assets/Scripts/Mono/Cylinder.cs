@@ -1,12 +1,11 @@
 ﻿using UnityEngine;
 using DG.Tweening;
-using System;
+
 
 
 
 public class Cylinder : MonoBehaviour, IEquipable<CylinderProfile>
 {
-	
 
 
 	private MaterialPropertyBlock _materialPropertyBlock;
@@ -16,6 +15,7 @@ public class Cylinder : MonoBehaviour, IEquipable<CylinderProfile>
 	private int _mainTextureKey;
 	private int _bumpTextureKey;
 	private int _emiTextureKey;
+
 
 
 	private void Awake()
@@ -28,6 +28,8 @@ public class Cylinder : MonoBehaviour, IEquipable<CylinderProfile>
 		_mainTextureKey = Shader.PropertyToID("_MainTex");
 		_bumpTextureKey = Shader.PropertyToID("_BumpMap");
 		_emiTextureKey = Shader.PropertyToID("_EmissionMap");
+
+		CylinderProfile.OnCylinderSelected += Equip;
 	}
 
 
@@ -36,18 +38,19 @@ public class Cylinder : MonoBehaviour, IEquipable<CylinderProfile>
 		_renderer.GetPropertyBlock(_materialPropertyBlock);
 		Color from = _materialPropertyBlock.GetColor(_emiColorKey);
 
-		DOTween.To(
-			() => from, 
-			currentColor => 
-			{
-				_renderer.GetPropertyBlock(_materialPropertyBlock);
-				_materialPropertyBlock.SetColor(_emiColorKey, currentColor);
-				_renderer.SetPropertyBlock(_materialPropertyBlock);
-			}, to, duration)
+		DOTween.To(() => from, SetMaterialPropertyBlock, to, duration)
 			.OnComplete(callback);
 	}
-	
-	
+
+
+	private void SetMaterialPropertyBlock(Color currentColor)
+	{
+		_renderer.GetPropertyBlock(_materialPropertyBlock);
+		_materialPropertyBlock.SetColor(_emiColorKey, currentColor);
+		_renderer.SetPropertyBlock(_materialPropertyBlock);
+	}
+
+
 	public void Equip(CylinderProfile toEquip)
 	{
 		_renderer.sharedMaterial.SetColor(_tintColorKey, toEquip.tintColor);

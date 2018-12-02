@@ -24,7 +24,6 @@ public class CylinderProfile : ShopReadyProfile
 	public Texture2D normalMap => _normalMap;
 
 
-
 	public override void Select()
 	{
 		OnCylinderSelected?.Invoke(this);

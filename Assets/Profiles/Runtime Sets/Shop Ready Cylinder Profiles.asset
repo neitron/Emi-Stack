@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91f6c7dc82d6b9c41bf763efc208a587, type: 3}
+  m_Name: Shop Ready Cylinder Profiles
+  m_EditorClassIdentifier: 
+  items:
+  - {fileID: 11400000, guid: dab70b0ad48e4c14fa5ad2dd199c0a69, type: 2}
+  - {fileID: 11400000, guid: c1a9f59d287a83f49ab0d8499cef4f97, type: 2}
+  - {fileID: 11400000, guid: dcd351af28712784aabf4993c2cf94f9, type: 2}

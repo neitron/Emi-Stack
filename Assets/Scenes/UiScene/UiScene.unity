@@ -1148,7 +1148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65b8de0d6c3307b4b9a5ca22aa5d5e88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _goods: {fileID: 11400000, guid: 5ea0d4dcabd1b4949a0ed09d40ebb7e7, type: 2}
+  _goods: {fileID: 11400000, guid: 16714989160fa3d48ad0f7d5daefd580, type: 2}
   _view: {fileID: 1851701606}
   _templatePrefab: {fileID: 1693599586}
   _coinsView: {fileID: 1681084047}
