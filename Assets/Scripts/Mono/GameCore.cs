@@ -17,6 +17,7 @@ public class GameCore : MonoBehaviour
 	[SerializeField] private IntProfile _coins;
 	[SerializeField] private GameEventProfiler _putting;
 	[SerializeField] private GameEventProfiler _perfectMatch;
+	[SerializeField] private GameEventProfiler _errorMatch;
 	[SerializeField] private GameEventProfiler _endGame;
 
 	[Header("Prototype")]
@@ -205,7 +206,7 @@ public class GameCore : MonoBehaviour
 
 		// Falling
 		Vector3 fallDownStep = (_endLayerPosition - _currentLayer.position) * _gameSettings.moveToEndPosSpeed;
-		while (Vector3.SqrMagnitude(_endLayerPosition - _currentLayer.position) > _gameSettings.biasToJoinCurentCylinder)
+		while (_currentLayer.position.y - _endLayerPosition.y > _gameSettings.biasToJoinCurentCylinder)
 		{
 			_currentLayer.position += fallDownStep * Time.deltaTime;
 			yield return wait;
@@ -304,6 +305,7 @@ public class GameCore : MonoBehaviour
 		_gameState.state = GameState.State.End;
 		
 		_currentLayer.GetComponent<Cylinder>().ChangeEmissionColor(_errorColor, 0.5f, ShopwPole);
+		_errorMatch.Raice();
 
 		if (_layersScoreProfile.value > _bestScore.value)
 		{

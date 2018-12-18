@@ -11,5 +11,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f38da5107c30544f98cc3afd846795b, type: 3}
   m_Name: Shop
   m_EditorClassIdentifier: 
-  goods: {fileID: 11400000, guid: 16714989160fa3d48ad0f7d5daefd580, type: 2}
+  goods: {fileID: 11400000, guid: bca087e5ec53f2141813788b6065d81b, type: 2}
   coins: {fileID: 11400000, guid: 57280419c9c41294d8a697c82799198f, type: 2}

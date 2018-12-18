@@ -36,7 +36,7 @@ public class Shop : ScriptableObject
 
 			goods.Add(shopItem);
 		}
-		goods.onChanged();
+		goods.onChanged?.Invoke();
 	}
 
 

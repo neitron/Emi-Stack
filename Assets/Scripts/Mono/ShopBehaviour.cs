@@ -101,7 +101,7 @@ public class ShopBehaviour : MonoBehaviour
 	private void Select(int id)
 	{
 		_gamePrefs.selectedCylinderId = id;
-		_closeShop.Raice();
+		//_closeShop.Raice();
 	}
 
 

@@ -38,7 +38,7 @@ public class ShopItemUi : MonoBehaviour
 			return;
 		}
 
-		_costView.text = $"$ {item.cost}";
+		_costView.text = $"{item.cost}";
 	}
 
 

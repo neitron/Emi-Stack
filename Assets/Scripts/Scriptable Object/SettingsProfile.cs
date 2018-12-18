@@ -24,4 +24,6 @@ public class SettingsProfile : ScriptableObject
 	public float perfectScaleUpModificator;
 	public float perfectScalingAnimDuration;
 	public DG.Tweening.Ease perfectScalingAnimEase;
+
+
 }

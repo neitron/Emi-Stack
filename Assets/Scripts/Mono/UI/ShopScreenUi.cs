@@ -13,10 +13,6 @@ public class ShopScreenUi : MonoBehaviour
 	[SerializeField] private LayoutGroup _view;
 	[SerializeField] private GameObject _templatePrefab;
 
-	[Header("Coins stats")] 
-	[SerializeField] private TMPro.TextMeshProUGUI _coinsView;
-	[SerializeField] private IntProfile _coins;
-
 
 	private List<ShopItemUi> _goodsViewButtons;
 
@@ -26,13 +22,6 @@ public class ShopScreenUi : MonoBehaviour
 	{
 		_goods.onChanged += UpdateView;
 		_goods.onBought += UpdateButtonAfterBought;
-	}
-
-
-	private void Start()
-	{
-		_coinsView.text = $"${_coins.value}";
-		_coins.OnChanged += (newValue) => { _coinsView.text = $"${newValue}"; };
 	}
 
 
