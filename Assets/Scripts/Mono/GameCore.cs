@@ -311,7 +311,10 @@ public class GameCore : MonoBehaviour
 		{
 			_bestScore.value = _layersScoreProfile.value;
 			_gamePrefs.bestScore = _bestScore.value;
+			PlayGames.AddScoreToLeaderboard(GPGSIds.leaderboard_leaderboard, _bestScore.value);
 		}
+
+		PlayGames.IncrementAchievement(GPGSIds.achievement_just_do_it, 1);
 	}
 
 

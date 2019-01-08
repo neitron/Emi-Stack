@@ -1,2 +1,9 @@
-lastUpgrade=00950
-proj.pluginVersion=0.9.50
+lastUpgrade=00957
+proj.pluginVersion=0.9.57
+proj.AppId=590428472740
+and.BundleId=com.Neitron.EmiStack
+proj.classDir=Assets
+proj.ConstantsClassName=GPGSIds
+and.ResourceData=%3c%3fxml+version%3d%221.0%22+encoding%3d%22utf-8%22%3f%3e%0d%0a%3c%21--%0d%0aGoogle+Play+game+services+IDs.%0d%0aSave+this+file+as+res%2fvalues%2fgames-ids.xml+in+your+project.%0d%0a--%3e%0d%0a%3cresources%3e%0d%0a++%3c%21--+app_id+--%3e%0d%0a++%3cstring+name%3d%22app_id%22+translatable%3d%22false%22%3e590428472740%3c%2fstring%3e%0d%0a++%3c%21--+package_name+--%3e%0d%0a++%3cstring+name%3d%22package_name%22+translatable%3d%22false%22%3ecom.Neitron.EmiStack%3c%2fstring%3e%0d%0a++%3c%21--+achievement+Standard+Achievement+--%3e%0d%0a++%3cstring+name%3d%22achievement_standard_achievement%22+translatable%3d%22false%22%3eCgkIpIuewpcREAIQAw%3c%2fstring%3e%0d%0a++%3c%21--+achievement+Just+do+it+--%3e%0d%0a++%3cstring+name%3d%22achievement_just_do_it%22+translatable%3d%22false%22%3eCgkIpIuewpcREAIQAQ%3c%2fstring%3e%0d%0a++%3c%21--+leaderboard+Leaderboard+--%3e%0d%0a++%3cstring+name%3d%22leaderboard_leaderboard%22+translatable%3d%22false%22%3eCgkIpIuewpcREAIQAg%3c%2fstring%3e%0d%0a%3c%2fresources%3e
+and.ClientId=
+android.SetupDone=true

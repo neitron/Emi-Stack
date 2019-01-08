@@ -23,6 +23,8 @@ public class CylinderProfile : ShopReadyProfile
 	[SerializeField] private Texture2D _normalMap;
 	public Texture2D normalMap => _normalMap;
 
+	//[SerializeField] private Material _skin;
+
 
 	public override void Select()
 	{

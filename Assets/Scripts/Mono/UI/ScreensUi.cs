@@ -28,7 +28,7 @@ public class ScreensUi : MonoBehaviour
 	}
 
 
-	public void MoveToConsole()
+	public void MoveToLeaderboard()
 	{
 		_rectTransform.DOAnchorPosX(-2160, _screenSwitchingDuration);
 	}
