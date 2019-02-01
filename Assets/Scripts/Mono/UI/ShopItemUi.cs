@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 
@@ -9,10 +8,12 @@ public class ShopItemUi : MonoBehaviour
 {
 
 
+#pragma warning disable 649
 	[SerializeField] private TMPro.TextMeshProUGUI _costView;
 	[SerializeField] private Image _thumbnail;
 	[SerializeField] private GameObject _viewNonBought;
 	[SerializeField] private GameObject _viewBought;
+#pragma warning restore 649
 
 
 	private ShopScreenUi _shopUi;
@@ -34,7 +35,7 @@ public class ShopItemUi : MonoBehaviour
 
 		if (item.isBought)
 		{
-			CahngeToBoughtView();
+			ChangeToBoughtView();
 			return;
 		}
 
@@ -42,7 +43,7 @@ public class ShopItemUi : MonoBehaviour
 	}
 
 
-	internal void CahngeToBoughtView()
+	internal void ChangeToBoughtView()
 	{
 		_viewBought.SetActive(true);
 		_viewNonBought.SetActive(false);

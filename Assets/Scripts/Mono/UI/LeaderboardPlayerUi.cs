@@ -10,7 +10,7 @@ public class LeaderboardPlayerUi : MonoBehaviour
 {
 
 
-	[SerializeField] private TMPro.TextMeshProUGUI _nameView;
+	[SerializeField] private Text _nameView; // Because of Unicode needs
 	[SerializeField] private TMPro.TextMeshProUGUI _scoreView;
 	[SerializeField] private TMPro.TextMeshProUGUI _rankView;
 

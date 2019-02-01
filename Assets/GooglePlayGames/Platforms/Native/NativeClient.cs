@@ -949,12 +949,13 @@ namespace GooglePlayGames.Native
         public void LoadScores(string leaderboardId, LeaderboardStart start,
             int rowCount, LeaderboardCollection collection,
             LeaderboardTimeSpan timeSpan,
-            Action<LeaderboardScoreData> callback)
+            Action<LeaderboardScoreData> callback,
+			bool isNetworkOnly = false)
         {
             callback = AsOnGameThreadCallback(callback);
             GameServices().LeaderboardManager().LoadLeaderboardData(
                 leaderboardId, start, rowCount, collection, timeSpan,
-                this.mUser.id, callback
+                this.mUser.id, callback, isNetworkOnly
             );
         }
 

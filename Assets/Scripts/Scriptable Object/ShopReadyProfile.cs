@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 
 
@@ -16,6 +17,12 @@ public abstract class ShopReadyProfile : ScriptableObject, IShopReadyProfile
 
 
 	public abstract void Select();
+
+
+	public virtual void OnDestroy()
+	{
+		Debug.Log($"{this.name} is destroyed");
+	}
 
 
 }

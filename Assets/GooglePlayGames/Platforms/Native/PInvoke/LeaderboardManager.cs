@@ -90,7 +90,8 @@ namespace GooglePlayGames.Native.PInvoke
             int rowCount,
             LeaderboardCollection collection,
             LeaderboardTimeSpan timeSpan,
-            string playerId, Action<LeaderboardScoreData> callback)
+            string playerId, Action<LeaderboardScoreData> callback,
+			bool isNetworkOnly = false)
         {
 
             //Create a token we'll use to load scores later.
@@ -106,7 +107,7 @@ namespace GooglePlayGames.Native.PInvoke
 
            // First fetch the leaderboard to get the title
             C.LeaderboardManager_Fetch(mServices.AsHandle(),
-                Types.DataSource.CACHE_OR_NETWORK,
+				isNetworkOnly ? Types.DataSource.NETWORK_ONLY : Types.DataSource.CACHE_OR_NETWORK,
                 leaderboardId,
                 InternalFetchCallback,
                 Callbacks.ToIntPtr<FetchResponse>((rsp) =>

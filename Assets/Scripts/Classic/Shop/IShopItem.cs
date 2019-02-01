@@ -1,6 +1,4 @@
-﻿using System;
-
-public interface IShopItem : IShopItemData
+﻿public interface IShopItem : IShopItemData
 {
 
 

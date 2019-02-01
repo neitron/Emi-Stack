@@ -267,7 +267,7 @@ namespace GooglePlayGames.BasicApi
     void LoadScores(string leaderboardId, LeaderboardStart start,
                     int rowCount, LeaderboardCollection collection,
                     LeaderboardTimeSpan timeSpan,
-            Action<LeaderboardScoreData> callback);
+            Action<LeaderboardScoreData> callback, bool isNetworkOnly = false);
 
     /// <summary>
     /// Loads the more scores for the leaderboard.

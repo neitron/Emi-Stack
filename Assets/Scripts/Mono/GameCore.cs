@@ -1,13 +1,16 @@
-﻿using System.Collections;
+﻿using System;
+using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
-using System;
+
+
 
 public class GameCore : MonoBehaviour
 {
 
-
+	#region Expoused fields
+#pragma warning disable 649
 	[SerializeField] private Transform _mainCam;
 
 	[Header("Profiles")]
@@ -15,8 +18,14 @@ public class GameCore : MonoBehaviour
 	[SerializeField] private IntProfile _layersScoreProfile;
 	[SerializeField] private IntProfile _bestScore;
 	[SerializeField] private IntProfile _coins;
+	[SerializeField] private IntProfile _perfectSeries;
+
+	[Header("Events")]
+	[SerializeField] private GameEventProfiler _fall;
 	[SerializeField] private GameEventProfiler _putting;
 	[SerializeField] private GameEventProfiler _perfectMatch;
+	[SerializeField] private GameEventProfiler _perfectSeriesCompleted;
+	[SerializeField] private GameEventProfiler _commonSeriesCompleted;
 	[SerializeField] private GameEventProfiler _errorMatch;
 	[SerializeField] private GameEventProfiler _endGame;
 
@@ -31,8 +40,9 @@ public class GameCore : MonoBehaviour
 
 	[Header("FX")]
 	[SerializeField] private Transform _visualFx;
-
-
+	//[SerializeField] private AudioMixer _audioMixer;
+#pragma warning restore 649
+	#endregion
 
 	private enum TouchState { Released, Up, Down }
 	private TouchState _touchState;
@@ -55,7 +65,7 @@ public class GameCore : MonoBehaviour
 	private float _prevLayerScale;
 	private bool _isPrevPerfect;
 	private Animation _graundingAnimation;
-
+	
 
 
 	private void Awake()
@@ -67,7 +77,7 @@ public class GameCore : MonoBehaviour
 	}
 
 	
-	[System.Obsolete("Temp solution")] private void LoadUiScene()
+	[System.Obsolete("Temp solution")] private static void LoadUiScene()
 	{
 #if !UNITY_EDITOR
 		UnityEngine.SceneManagement.SceneManager.LoadScene(1, UnityEngine.SceneManagement.LoadSceneMode.Additive);
@@ -77,9 +87,17 @@ public class GameCore : MonoBehaviour
 
 	private void Start ()
 	{
-		_gameStateCallbacks = new Dictionary<GameState.State, UpdateCallback>();
-		_gameStateCallbacks.Add(GameState.State.Home, HomeUpdate);
-		_gameStateCallbacks.Add(GameState.State.Session, SessionUpdate);
+		_gameStateCallbacks = new Dictionary<GameState.State, UpdateCallback>
+		{
+			{
+				GameState.State.Home,
+				HomeUpdate
+			},
+			{
+				GameState.State.Session,
+				SessionUpdate
+			}
+		};
 
 		LoadPrefs();
 
@@ -94,6 +112,7 @@ public class GameCore : MonoBehaviour
 
 		_firstLayer.transform.localScale = new Vector3(1.0f, _gameSettings.cylinderStartScale.y, 1.0f);
 		InitPool();
+		_firstLayer.GetComponent<Cylinder>().ChangeEmissionColor(_firstColor, 0.0f);
 
 		_layersScoreProfile.value = 0;
 
@@ -102,7 +121,7 @@ public class GameCore : MonoBehaviour
 		// Debug console test log
 		Debug.Log("Test Log");
 		Debug.LogWarning("Test Warning");
-		Debug.LogError("Tets Error");
+		Debug.LogError("Test Error");
 	}
 
 
@@ -139,6 +158,7 @@ public class GameCore : MonoBehaviour
 		_currentLayer = _firstLayer.transform;
 		_prevLayerScale = _currentLayer.localScale.x;
 		_layersScoreProfile.value = 1;
+		_perfectSeries.value = 0;
 
 		_firstLayer.GetComponent<Cylinder>().ChangeEmissionColor(_firstColor, 0.0f);
 		_putting.Raice();
@@ -196,11 +216,11 @@ public class GameCore : MonoBehaviour
 			_isPrevPerfect = false;
 		}
 
-		StartCoroutine(ScaleUpLayer(perfectFactor));
+		StartCoroutine(AddLayer(perfectFactor));
 	}
 
 
-	private IEnumerator ScaleUpLayer(float scaleFactor)
+	private IEnumerator AddLayer(float scaleFactor)
 	{
 		var wait = new WaitForEndOfFrame();
 
@@ -212,6 +232,8 @@ public class GameCore : MonoBehaviour
 			yield return wait;
 		}
 		_currentLayer.position = _endLayerPosition;
+
+		_fall.Raice();
 
 		// Grounding Animation
 		Animation graundingAnimation = _currentLayer.GetComponent<Animation>();
@@ -245,33 +267,50 @@ public class GameCore : MonoBehaviour
 		if (_prevLayerScale - _currentLayer.localScale.x < _gameSettings.perfectFitDifference)
 		{
 			_currentLayer.localScale = new Vector3(_prevLayerScale, _gameSettings.cylinderStartScale.y, _prevLayerScale);
+
 			PerfectMatch();
 		}
 		else
 		{
 			_prevLayerScale = _currentLayer.localScale.x;
+			_perfectSeries.value = 0;
+
+			_putting.Raice();
 		}
 
 		_currentLayer.GetComponent<Cylinder>().ChangeEmissionColor(_successColor, 0.2f);
 
-		_putting.Raice();
 		_visualFx.transform.position += _layerOffset;
 
 		_mainCam.DOMove(_mainCam.position + _layerOffset, 0.1f);
 		_layersScoreProfile.value++;
+
+		if (_layersScoreProfile.value % _gameSettings.commonSeries == 0)
+		{
+			_commonSeriesCompleted.Raice();
+			_coins.value += _gameSettings.commonSeriesPrize;
+			_gamePrefs.coins = _coins.value;
+		}
 	}
 
 
 	private void PerfectMatch()
 	{
-		_coins.value++;
-		_gamePrefs.coins = _coins.value;
+		_perfectSeries.value++;
+		_isPrevPerfect = true;
+		if (_perfectSeries.value == _gameSettings.perfectSeries)
+		{
+			_perfectSeriesCompleted.Raice();
+			_perfectSeries.value = 0;
+			_coins.value += _gameSettings.perfectSeriesPrize;
+			_gamePrefs.coins = _coins.value;
+		}
+		else
+		{
+			_perfectMatch.Raice();
+		}
 
 		_currentLayer.GetComponent<Cylinder>().ChangeEmissionColor(_perfectColor, 0.5f);
-
-		_isPrevPerfect = true;
-
-		_perfectMatch.Raice();
 
 		int lastInd = _stack.Count - 1;
 		for (int i = lastInd; i >=0; i--)
@@ -283,7 +322,7 @@ public class GameCore : MonoBehaviour
 				endScale = _firstLayer.transform.localScale;
 				
 			} 
-			else if (endScale.x == _firstLayer.transform.localScale.x)
+			else if (Math.Abs(endScale.x - _firstLayer.transform.localScale.x) < 0.001f)
 			{
 				break;
 			}
@@ -303,8 +342,8 @@ public class GameCore : MonoBehaviour
 	private void EndGame()
 	{
 		_gameState.state = GameState.State.End;
-		
-		_currentLayer.GetComponent<Cylinder>().ChangeEmissionColor(_errorColor, 0.5f, ShopwPole);
+
+		_currentLayer.GetComponent<Cylinder>().ChangeEmissionColor(_errorColor, 0.5f, ShowPole);
 		_errorMatch.Raice();
 
 		if (_layersScoreProfile.value > _bestScore.value)
@@ -318,7 +357,7 @@ public class GameCore : MonoBehaviour
 	}
 
 
-	private void ShopwPole()
+	private void ShowPole()
 	{
 		_gameState.state = GameState.State.Home;
 

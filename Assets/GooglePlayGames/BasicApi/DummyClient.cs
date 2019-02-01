@@ -311,7 +311,8 @@ namespace GooglePlayGames.BasicApi
             int rowCount,
             LeaderboardCollection collection,
             LeaderboardTimeSpan timeSpan,
-            Action<LeaderboardScoreData> callback)
+            Action<LeaderboardScoreData> callback, 
+			bool isNetworkOnly = false)
         {
             LogUsage();
             if (callback != null)

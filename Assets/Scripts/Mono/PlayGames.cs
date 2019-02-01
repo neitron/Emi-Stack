@@ -6,8 +6,6 @@ using System;
 using System.IO;
 using System.Collections;
 
-
-
 public class PlayGames : MonoBehaviour
 {
 
@@ -132,7 +130,7 @@ public class PlayGames : MonoBehaviour
 	}
 
 
-	public static void LoadScores(Action<IScore[]> callback)
+	public static void LoadScores(Action<IScore[]> callback, bool isNetworkOnly)
 	{
 		PlayGamesPlatform.Instance.LoadScores(
 			GPGSIds.leaderboard_leaderboard,
@@ -144,21 +142,8 @@ public class PlayGames : MonoBehaviour
 			{
 				Debug.Log($"Update players score list: {(data.Valid ? "Success" : "Failed")}, Approx: {data.ApproximateCount}");
 				callback?.Invoke(data.Scores);
-			});
-
-		//ILeaderboard leaderboard = Social.CreateLeaderboard();
-		//leaderboard.id = GPGSIds.leaderboard_leaderboard;
-		//leaderboard.timeScope = TimeScope.AllTime;
-		//leaderboard.userScope = UserScope.Global;
-		//leaderboard.range = new Range(0, 100);
-
-		//leaderboard.LoadScores(result => 
-		//{
-		//	Debug.Log($"Update players score list: {(result ? "Success" : "Failed")}");
-		//	callback?.Invoke(leaderboard.scores);
-		//});
-		
-		//Social.LoadScores(GPGSIds.leaderboard_leaderboard, callback);
+			},
+			isNetworkOnly);
 	}
 
 

@@ -16,6 +16,8 @@ public class SettingsProfile : ScriptableObject
 	public Vector3 outOffScreenOffset;
 	public float moveToEndPosSpeed;
 	public float biasToJoinCurentCylinder;
+	public int commonSeries;
+	public int commonSeriesPrize;
 
 
 	[Header("Perfect match case")]
@@ -23,6 +25,8 @@ public class SettingsProfile : ScriptableObject
 	public float perfectSpeedModificator;
 	public float perfectScaleUpModificator;
 	public float perfectScalingAnimDuration;
+	public int perfectSeries;
+	public int perfectSeriesPrize;
 	public DG.Tweening.Ease perfectScalingAnimEase;
 
 

@@ -27,7 +27,7 @@ public class ShopScreenUi : MonoBehaviour
 
 	private void UpdateButtonAfterBought(int id)
 	{
-		_goodsViewButtons[id].CahngeToBoughtView();
+		_goodsViewButtons[id].ChangeToBoughtView();
 	}
 
 

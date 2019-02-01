@@ -1090,22 +1090,22 @@ namespace GooglePlayGames
                 (scoreData) => callback(scoreData.Scores));
         }
 
-        /// <summary>
-        /// Loads the scores using the provided parameters.
-        /// </summary>
-        /// <param name="leaderboardId">Leaderboard identifier.</param>
-        /// <param name="start">Start either top scores, or player centered.</param>
-        /// <param name="rowCount">Row count. the number of rows to return.</param>
-        /// <param name="collection">Collection. social or public</param>
-        /// <param name="timeSpan">Time span. daily, weekly, all-time</param>
-        /// <param name="callback">Callback to invoke when completed.</param>
-        public void LoadScores(
+		/// <summary>
+		/// Loads the scores using the provided parameters.
+		/// </summary>
+		/// <param name="leaderboardId">Leaderboard identifier.</param>
+		/// <param name="start">Start either top scores, or player centered.</param>
+		/// <param name="rowCount">Row count. the number of rows to return.</param>
+		/// <param name="collection">Collection. social or public</param>
+		/// <param name="timeSpan">Time span. daily, weekly, all-time</param>
+		/// <param name="callback">Callback to invoke when completed.</param>
+		public void LoadScores(
             string leaderboardId,
             LeaderboardStart start,
             int rowCount,
             LeaderboardCollection collection,
             LeaderboardTimeSpan timeSpan,
-            Action<LeaderboardScoreData> callback)
+            Action<LeaderboardScoreData> callback, bool isNetworkOnly = false)
         {
             if (!IsAuthenticated())
             {
@@ -1122,7 +1122,8 @@ namespace GooglePlayGames
                 rowCount,
                 collection,
                 timeSpan,
-                callback);
+                callback,
+				isNetworkOnly);
         }
 
         /// <summary>

@@ -8,7 +8,7 @@ AnimatorController:
   m_Name: Perfect
   serializedVersion: 5
   m_AnimatorParameters:
-  - m_Name: PerfectMatch
+  - m_Name: Series
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -35,7 +35,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: PerfectMatch
+    m_ConditionEvent: Series
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102104212599466206}
@@ -78,7 +78,7 @@ AnimatorState:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Perfect
+  m_Name: Perfect Series
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -134,7 +134,7 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 1102104212599466206}
-    m_Position: {x: 96, y: 360, z: 0}
+    m_Position: {x: 108, y: 324, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102736838133920258}
     m_Position: {x: 108, y: 216, z: 0}

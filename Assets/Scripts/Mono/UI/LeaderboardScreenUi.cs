@@ -10,7 +10,7 @@ using UnityEngine.SocialPlatforms;
 public class LeaderboardScreenUi : MonoBehaviour
 {
 
-
+	
 	[SerializeField] private LayoutGroup _view;
 	[SerializeField] private GameObject _templatePrefab;
 	[SerializeField] private GameObject _loadingIndicator;
@@ -18,14 +18,30 @@ public class LeaderboardScreenUi : MonoBehaviour
 
 
 	private Dictionary<string, LeaderboardPlayerUi> _playerScoreViews;
+	private RectTransform _viewRect;
+	private bool _isUpdating;
 
 
 
-	public void UpdateView()
+	private void Start()
+	{
+		_viewRect = _view.GetComponent<RectTransform>();
+	}
+
+
+	private void OnScrollUpdate()
+	{
+		UpdateView(isNetworkOnly: true);
+		Debug.Log($"Force Network Update");
+	}
+
+
+	public void UpdateView(bool isNetworkOnly)
 	{
 		_noDataTitle.gameObject.SetActive(false);
 		_loadingIndicator.SetActive(true);
-		PlayGames.LoadScores(UpdateView);
+		_isUpdating = true;
+		PlayGames.LoadScores(UpdateView, isNetworkOnly);
 	}
 
 
@@ -71,6 +87,16 @@ public class LeaderboardScreenUi : MonoBehaviour
 		});
 
 		_loadingIndicator.SetActive(false);
+		_isUpdating = false;
+	}
+
+
+	private void Update()
+	{
+		if (!_isUpdating && _viewRect.anchoredPosition.y <= -250.0f)
+		{
+			OnScrollUpdate();
+		}
 	}
 
 

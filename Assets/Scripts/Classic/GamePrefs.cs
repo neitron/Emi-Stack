@@ -44,6 +44,19 @@ public class GamePrefs
 		}
 	}
 
+	private const string IS_AUDIO_MUTED_KEY = "IS_AUDIO_MUTED";
+	public bool isAudioMuted
+	{
+		get
+		{
+			return PlayerPrefs.GetInt(IS_AUDIO_MUTED_KEY, 1) == 1 ? true : false;
+		}
+		set
+		{
+			PlayerPrefs.SetInt(IS_AUDIO_MUTED_KEY, value ? 1 : 0);
+		}
+	}
+
 
 
 	public void Reset()

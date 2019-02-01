@@ -1,5 +1,7 @@
 ﻿using System;
+using UnityEditor;
 using UnityEngine;
+#pragma warning disable 649
 
 
 
@@ -10,25 +12,29 @@ public class CylinderProfile : ShopReadyProfile
 
 	public static event Action<CylinderProfile> OnCylinderSelected;
 
+	
+	[SerializeField] private Material _skin;
+	public Material skin => _skin;
 
-	[SerializeField] private Color _tintColor;
-	public Color tintColor => _tintColor;
-
-	[SerializeField] private Texture2D _mainMap;
-	public Texture2D mainMap => _mainMap;
-
-	[SerializeField] private Texture2D _emissionMap;
-	public Texture2D emissionMap => _emissionMap;
-
-	[SerializeField] private Texture2D _normalMap;
-	public Texture2D normalMap => _normalMap;
-
-	//[SerializeField] private Material _skin;
 
 
 	public override void Select()
 	{
 		OnCylinderSelected?.Invoke(this);
+	}
+
+
+	public override void OnDestroy()
+	{
+		if (_skin == null)
+		{
+			return;
+		}
+
+#if UNITY_EDITOR
+		string materialPath = AssetDatabase.GetAssetPath(_skin);
+		AssetDatabase.DeleteAsset(materialPath);
+#endif
 	}
 
 

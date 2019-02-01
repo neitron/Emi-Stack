@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+#pragma warning disable 649
 
 
 
@@ -28,7 +27,7 @@ public class ShopBehaviour : MonoBehaviour
 
 	private void Start()
 	{
-		_shopReadySetProfile.items.Sort((cpl, cpr) => { return cpl.cost.CompareTo(cpr.cost); });
+		_shopReadySetProfile.items.Sort((cpl, cpr) => cpl.cost.CompareTo(cpr.cost));
 
 		LoadShopData();
 		GenerateGoods();
@@ -60,8 +59,8 @@ public class ShopBehaviour : MonoBehaviour
 		GameSaver gameSaver = new GameSaver();
 		gameSaver.Save(_shopSaveData);
 
-		gameSaver.SaveAsJson(_shopSaveData, true);
-		gameSaver.SaveAsJson(_shop.goods, true);
+		gameSaver.SaveAsJson(_shopSaveData, true); // TODO: make it false
+		gameSaver.SaveAsJson(_shop.goods, true); // TODO: make it false
 	}
 
 
@@ -81,6 +80,12 @@ public class ShopBehaviour : MonoBehaviour
 			_shopSaveData.AddDefault();
 		}
 		_shopSaveData.shopBoughtItems[0].isBought = true;
+
+		if (_gamePrefs == null)
+		{
+			_gamePrefs = new GamePrefs();
+		}
+		Select(0);
 	}
 	
 
@@ -101,7 +106,6 @@ public class ShopBehaviour : MonoBehaviour
 	private void Select(int id)
 	{
 		_gamePrefs.selectedCylinderId = id;
-		//_closeShop.Raice();
 	}
 
 
@@ -124,10 +128,10 @@ public class ShopBehaviour : MonoBehaviour
 	}
 
 
-	[ContextMenu("Add 10 Cons")]
+	[ContextMenu("Add 100 Cons")]
 	private void AddCoins()
 	{
-		_shop.coins.value += 10;
+		_shop.coins.value += 100;
 		_gamePrefs.coins = _shop.coins.value;
 	}
 	#endregion

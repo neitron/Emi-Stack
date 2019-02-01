@@ -18,8 +18,12 @@ MonoBehaviour:
   outOffScreenOffset: {x: 0, y: 2, z: 0}
   moveToEndPosSpeed: 5
   biasToJoinCurentCylinder: 0.01
+  commonSeries: 5
+  commonSeriesPrize: 1
   perfectFitDifference: 0.04
   perfectSpeedModificator: 1.5
   perfectScaleUpModificator: 0.02
   perfectScalingAnimDuration: 0.3
+  perfectSeries: 5
+  perfectSeriesPrize: 5
   perfectScalingAnimEase: 28
