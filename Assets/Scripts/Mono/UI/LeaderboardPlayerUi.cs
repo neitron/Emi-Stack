@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
@@ -10,11 +9,13 @@ public class LeaderboardPlayerUi : MonoBehaviour
 {
 
 
+#pragma warning disable 649
 	[SerializeField] private Text _nameView; // Because of Unicode needs
 	[SerializeField] private TMPro.TextMeshProUGUI _scoreView;
 	[SerializeField] private TMPro.TextMeshProUGUI _rankView;
 
 	[SerializeField] private Image _avatarView;
+#pragma warning restore 649
 
 
 
@@ -24,13 +25,12 @@ public class LeaderboardPlayerUi : MonoBehaviour
 		_nameView.text = userProfile.userName;
 		_scoreView.text = scoreEntity.formattedValue;
 		// Pick a random, saturated and not-too-dark color
-		_avatarView.color = UnityEngine.Random.ColorHSV(0f, 1f, 0.55f, 0.55f, 0.84f, 0.84f);
+		_avatarView.color = Random.ColorHSV(0f, 1f, 0.55f, 0.55f, 0.84f, 0.84f);
 
 		gameObject.SetActive(true);
 		
 		StartCoroutine(LoadProfileImage(userProfile));
 
-		
 		Debug.Log($"player: {scoreEntity.userID}_{scoreEntity.formattedValue}");
 	}
 
